@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     public Text win;
     void Start()
     {
-        speed = 10.0f;
+        speed = 15.0f;
         rb = GetComponent<Rigidbody>();
         count = 0;
         SetCountText();
@@ -20,11 +20,21 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void FixedUpdate()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal")*speed;
-        float moveVertical = Input.GetAxis("Vertical")*speed;
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        rb.AddForce(movement);
+        if (SystemInfo.deviceType == DeviceType.Desktop) 
+        {
+            float moveHorizontal = Input.GetAxis("Horizontal")*speed;
+            float moveVertical = Input.GetAxis("Vertical")*speed;
+            Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+            rb.AddForce(movement);
+        }
+        else
+        {
+            Vector3 movement = new Vector3 (Input.acceleration.x, 0.0f, Input.acceleration.y);
+            GetComponent<Rigidbody>().AddForce(movement * speed * Time.deltaTime);
+            rb.AddForce(movement*speed);
     }
+        }
+     
     void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.CompareTag("Pick Up"))
